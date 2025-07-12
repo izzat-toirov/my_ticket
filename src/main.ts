@@ -12,24 +12,24 @@ async function start() {
     app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix("api");
 
-    app.enableCors({
-      origin: (origin, callback) => {
-        const allowedOrigins = [
-          "http://localhost:8000",
-          "http://localhost:3000",
-          "http://myticket.uz",
-          "http://api.myticket.uz",
-          "http://myticket.vercel.app",
-        ];
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new BadRequestException("Not allowed by Cors"));
-        }
-      },
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      credentials: true, //cookie va header
-    });
+    // app.enableCors({
+    //   origin: (origin, callback) => {
+    //     const allowedOrigins = [
+    //       "http://localhost:8000",
+    //       "http://localhost:3000",
+    //       "http://myticket.uz",
+    //       "http://api.myticket.uz",
+    //       "http://myticket.vercel.app",
+    //     ];
+    //     if (!origin || allowedOrigins.includes(origin)) {
+    //       callback(null, true);
+    //     } else {
+    //       callback(new BadRequestException("Not allowed by Cors"));
+    //     }
+    //   },
+    //   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    //   credentials: true, //cookie va header
+    // });
 
     const config = new DocumentBuilder()
       .setTitle("MyTicket Project")
@@ -40,7 +40,7 @@ async function start() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup("/api/docs", app, document);
+    SwaggerModule.setup("/docs", app, document);
     await app.listen(PORT, () => {
       console.log(`Server started at: http://localhost:${PORT}`);
     });

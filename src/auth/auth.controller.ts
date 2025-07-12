@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Post, Req, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateAdminDto } from "../admin/dto/create-admin.dto";
 import { LoginAdminDto } from "../admin/dto/login-admin.dto";
-import { Response } from "express";
+import { Request, Response } from "express";
+
 
 @Controller("auth")
 export class AuthController {
@@ -20,4 +21,27 @@ export class AuthController {
   ) {
     return this.authService.login(loginAdminDto, res);
   }
+
+  @Post("logout")
+  async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      throw new BadRequestException("Refresh token mavjud emas");
+    }
+    return this.authService.signOut(refreshToken, res);
+  }
+  
+
+  @Post("refresh")
+async refresh(
+  @Body("adminId") adminId: string,
+  @Req() req: Request,
+  @Res({ passthrough: true }) res: Response
+) {
+  const refreshToken = req.cookies?.refreshToken;
+  return this.authService.refreshToken(adminId, refreshToken, res);
+}
 }

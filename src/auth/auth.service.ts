@@ -1,12 +1,14 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
+  NotAcceptableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import {
   Admin,
   AdminDocument,
-  AdminSchema,
 } from "../admin/schemas/admin.schema";
 import { JwtService } from "@nestjs/jwt";
 import { CreateAdminDto } from "../admin/dto/create-admin.dto";
@@ -39,10 +41,8 @@ export class AuthService {
         expiresIn: process.env.REFRESH_TOKEN_TIME,
       }),
     ]);
-    return {
-      accessToken,
-      refreshToken,
-    };
+
+    return { accessToken, refreshToken };
   }
 
   async registration(createAdminDto: CreateAdminDto) {
@@ -80,4 +80,70 @@ export class AuthService {
 
     return { adminId: admin._id, accessToken };
   }
+
+  async signOut(refreshToken: string, res: Response) {
+    let userData: any;
+    try {
+      userData = await this.jwtService.verify(refreshToken, {
+        secret: process.env.REFRESH_TOKEN_KEY,
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+
+    if (!userData) {
+      throw new ForbiddenException("User not found");
+    }
+
+    await this.adminService.uptadeRefreshToken(userData.id, "");
+
+    res.clearCookie("refreshToken");
+
+    return {
+      message: "User logged out successfully",
+    };
+  }
+
+  async refreshToken(
+    adminId: string,
+    refreshTokenFromCookie: string,
+    res: Response
+  ) {
+
+    const decodedToken: any = this.jwtService.decode(refreshTokenFromCookie);
+    if (!decodedToken || decodedToken.id !== adminId) {
+      throw new ForbiddenException("Ruxsat etilmagan");
+    }
+
+    const user = await this.adminService.findOne(adminId);
+    if (!user || !user.hashed_refresh_token) {
+      throw new NotAcceptableException("Foydalanuvchi topilmadi yoki refresh token mavjud emas");
+    }
+  
+    const tokenMatch = await bcrypt.compare(
+      refreshTokenFromCookie,
+      user.hashed_refresh_token
+    );
+    if (!tokenMatch) {
+      throw new ForbiddenException("Ruxsat etilmagan: token mos emas");
+    }
+
+    const { accessToken, refreshToken } = await this.generateTokens(user);
+  
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 7);
+    await this.adminService.uptadeRefreshToken(user.id || user._id, hashedRefreshToken);
+  
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: Number(process.env.COOKIE_TIME),
+      httpOnly: true,
+    });
+ 
+    return {
+      message: "Token successfully refreshed",
+      userId: user._id,
+      accessToken,
+    };
+  }
+  
 }

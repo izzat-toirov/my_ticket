@@ -43,4 +43,12 @@ export class AdminService {
   remove(id: string) {
     return this.adminSchema.findByIdAndDelete(id);
   }
+  
+  async uptadeRefreshToken(id: string, refresh_token: string) {
+    return this.adminSchema.findByIdAndUpdate(id, {
+      hashed_refresh_token: refresh_token,
+    });
+  }  
+  
+  
 }
