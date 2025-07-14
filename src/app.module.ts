@@ -10,6 +10,8 @@ import { RegionModule } from './region/region.module';
 import { TypesModule } from './types/types.module';
 import { LongModule } from './long/long.module';
 import { TicketStatusModule } from './ticket_status/ticket_status.module';
+import { DistrictModule } from "./district/district.module";
+import { VenueModule } from './venue/venue.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { TicketStatusModule } from './ticket_status/ticket_status.module';
     TypesModule,
     LongModule,
     TicketStatusModule,
+    DistrictModule,
+    VenueModule
   ],
   controllers: [],
   providers: [],

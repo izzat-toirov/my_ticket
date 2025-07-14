@@ -4,16 +4,18 @@ import { UpdateRegionDto } from './dto/update-region.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Region } from './entities/region.entity';
 import { Model } from 'mongoose';
+import { District } from '../district/entities/district.entity';
 
 @Injectable()
 export class RegionService {
-  constructor(@InjectModel(Region.name) private readonly paymenyModel: Model<Region>){}
+  constructor(@InjectModel(Region.name) private readonly paymenyModel: Model<Region>
+){}
         async create(createRegionDto: CreateRegionDto) {
           return this.paymenyModel.create(createRegionDto);
         }
       
         async findAll() {
-          return await this.paymenyModel.find();
+          return await this.paymenyModel.find().populate("district");
         }
       
         async findOne(id: string) {
