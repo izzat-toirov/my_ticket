@@ -12,6 +12,8 @@ import { LongModule } from './long/long.module';
 import { TicketStatusModule } from './ticket_status/ticket_status.module';
 import { DistrictModule } from "./district/district.module";
 import { VenueModule } from './venue/venue.module';
+import { VenuePhotoModule } from './venue_photo/venue_photo.module';
+import { VenueTypesModule } from './venue_types/venue_types.module';
 
 @Module({
   imports: [
@@ -33,7 +35,9 @@ import { VenueModule } from './venue/venue.module';
     LongModule,
     TicketStatusModule,
     DistrictModule,
-    VenueModule
+    VenueModule,
+    VenuePhotoModule,
+    VenueTypesModule
   ],
   controllers: [],
   providers: [],
