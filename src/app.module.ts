@@ -18,6 +18,11 @@ import { CustomerModule } from './customer/customer.module';
 import { AuthCustomerModule } from './auth-customer/auth-customer.module';
 import { CustomerAddressModule } from './customer_address/customer_address.module';
 import { CustomerCardModule } from './customer_card/customer_card.module';
+import { EventModule } from './event/event.module';
+import { EventTypeModule } from './event_type/event_type.module';
+import { HumanCategoryModule } from './human_category/human_category.module';
+import { TicketModule } from './ticket/ticket.module';
+import { SeatModule } from './seat/seat.module';
 
 @Module({
   imports: [
@@ -29,8 +34,10 @@ import { CustomerCardModule } from './customer_card/customer_card.module';
       }),
       inject: [ConfigService],
     }),
-    AdminModule,
     AuthModule,
+    AuthCustomerModule,
+    AdminModule,
+    CustomerModule,
     PaymentMethodModule,
     DeliveryMethodModule,
     SeatTypeModule,
@@ -42,10 +49,13 @@ import { CustomerCardModule } from './customer_card/customer_card.module';
     VenueModule,
     VenuePhotoModule,
     VenueTypesModule,
-    CustomerModule,
-    AuthCustomerModule,
     CustomerAddressModule,
-    CustomerCardModule
+    CustomerCardModule,
+    EventModule,
+    EventTypeModule,
+    HumanCategoryModule,
+    TicketModule,
+    SeatModule
   ],
   controllers: [],
   providers: [],
